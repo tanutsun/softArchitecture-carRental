@@ -1,0 +1,264 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Car Rental
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+#
+tags:
+- name: "car"
+  description: "Everything about your Car Rental"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+#
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /getCarDisplay:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: car_rental
+    get:
+      tags:
+        - "car"
+      description: Returns all of car in system for show to the user
+      # used as the method name of the controller
+      operationId: getCarDisplay
+      parameters:
+        - name: from
+          in: query
+          description: Request api from
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CarResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /getCarOne:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: car_rental
+    get:
+      tags:
+        - "car"
+      description: Returns all of car in system for show to the user
+      # used as the method name of the controller
+      operationId: getCarOne
+      parameters:
+        - name: id
+          in: query
+          description: Resource ID
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CarOneResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /rentCar:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: car_rental
+    put:
+      tags:
+        - "car"
+      description: Change status of car
+      # used as the method name of the controller
+      operationId: rentCar
+      parameters:
+        - name: id
+          in: query
+          description: Resource id
+          required: true
+          type: "integer"
+          format: "int64"
+        - name: data
+          in: body
+          description: data update
+          required: true
+          # type: "object"
+          schema:
+            $ref: "#/definitions/Car"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/SuccessResponse"
+        "400":
+          description: Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ErrorResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /addCar:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: car_rental
+    post:
+      tags:
+        - "car"
+      description: Add car for rent
+      # used as the method name of the controller
+      operationId: addCar
+      parameters:
+        - name: data
+          in: body
+          description: data add
+          required: true
+          # type: "object"
+          schema:
+            $ref: "#/definitions/Car"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/SuccessResponse"
+        "400":
+          description: Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ErrorResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /deleteCar:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: car_rental
+    delete:
+      tags:
+        - "car"
+      description: delete car
+      # used as the method name of the controller
+      operationId: deleteCar
+      parameters:
+        - name: id
+          in: query
+          description: Resource id
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/SuccessResponse"
+        "400":
+          description: Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ErrorResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  SuccessResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  CarResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: object
+        items:
+          type: "array"
+  CarOneResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: object
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  Car:
+    type: "object"
+    required:
+      - status
+    properties:
+      name:
+        type: "string"
+        example: "TOYOTA CAMRY 2009"
+      size:
+        type: "string"
+        example: "ขนาดใหญ่"
+      start_rent:
+        type: "string"
+        example: "28/04/2018"
+      end_rent:
+        type: "string"
+        example: "29/04/2018"
+      place_rent:
+        type: "string"
+        example: "สนามบินเชียงใหม่, เชียงใหม่"
+      price_per_day:
+        type: "string"
+        example: "฿1,690"
+      model:
+        type: "string"
+        example: "TOYOTA CAMRY 2009"
+      gear:
+        type: "string"
+        example: "Auto"
+      description:
+        type: "string"
+        example: "รถยนต์ Toyata Camry ขนาดใหญ่ 4 ประตู 5 ที่นั่ง เหมาะสำหรับเดินทางได้ตั้งแต่ 1-5 ท่าน หากขับขึ้นเขาแนะนำให้มีผู้โดยสารไม่ควรเกิน 4 ท่าน ยินดีบริการรับ/ส่ง ทั้งที่สนามบินและในตัวเมืองเชียงใหม่ ฟรี!!!🚕🚗🚙ใครกำลังมองหารถเช่าเที่ยวเชียงใหม่ ต้อง Ladyfirst Carrent Tiew Chiangmai and Carrent มีบริการรับส่งสนามบินฟรี มีรถใหม่หลายคัน All New Vios , New Jazz , New Civic , New Fortuner , New Pajero , Camry , CRV , Prius , Juke Vigo และอื่นๆอีกมากมาย พร้อมบริการรับส่งฟรี ราคาLocal บริการเเบบมืออาชีพ ช่วงเวลารับรถ รับ-คืนช่วง23.10-5.50ค่าล่วงเวลา300 ช่วง6.00-7.50ค่าล่วงเวลา200 ช่วง21.10-23.00 ค่าล่วงเวลา200"
+      no_passenger:
+        type: "string"
+        example: "5"
+      accessories:
+        type: "string"
+        example: "FM/AM Radio, USB/AUX, CD/MP3"
+      img:
+        type: "string"
+        example: "https://assets.drivehub.co/uploads/car/photo/attachment/709/medium_b8301316-0051-453a-b906-658e20605135.jpg"
+      status:
+        type: "string"
+        description: "Car status in the store"
+        enum:
+        - "available"
+        - "pending"
+        - "rent"
+    # xml:
+    #   name: "Pet"
